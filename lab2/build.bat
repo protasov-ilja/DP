@@ -4,6 +4,8 @@ IF %1=="" GOTO empty_params
 SET semVer=%1
 SET baseUrl=%CD%
 
+CD %baseUrl%\src
+
 dotnet publish Frontend -c Release -o %baseUrl%\%1\Frontend
 dotnet publish Backend -c Release -o %baseUrl%\%1\Backend
 
