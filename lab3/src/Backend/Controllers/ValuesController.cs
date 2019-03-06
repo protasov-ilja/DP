@@ -34,7 +34,7 @@ namespace Backend.Controllers
             var db = redis.GetDatabase();
             var sub = redis.GetSubscriber();
             db.StringSet(id, value);
-            sub.Publish("TextCreated", id);
+            sub.Publish("events", id);
 
             return id;
         }

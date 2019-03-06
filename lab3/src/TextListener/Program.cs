@@ -13,10 +13,12 @@ namespace TextListener
             _redis = ConnectionMultiplexer.Connect("127.0.0.1:6379");
             _db = _redis.GetDatabase();
             var sub = _redis.GetSubscriber();
-            sub.Subscribe("TextCreated", (channel, message) => {
+            sub.Subscribe("events", (channel, message) => {
                 var value = _db.StringGet((string)message);
-                Console.WriteLine($"{message} {value}");
+                Console.WriteLine($"TextCreated: {message} {value}");
             });
+
+            Console.ReadLine();
         }
     }
 }
