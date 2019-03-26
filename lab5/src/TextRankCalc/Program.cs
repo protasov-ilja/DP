@@ -41,9 +41,7 @@ namespace TextRankCalc
 
         private static void SendMessage(string contextId)
         {
-            // put message to queue
             _db.ListLeftPush(COUNTER_QUEUE_NAME, contextId, flags: CommandFlags.FireAndForget);
-            // and notify consumers
             _redis.GetSubscriber().Publish(COUNTER_HINTS_CHANNEL, "");
         }
     }

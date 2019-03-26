@@ -17,17 +17,19 @@ namespace VowelConsCounter
         {
             Console.WriteLine("VowelConsCounter runing");
             _redis = ConnectionMultiplexer.Connect("127.0.0.1:6379");
-            var _db = _redis.GetDatabase();
+            _db = _redis.GetDatabase();
             var sub = _redis.GetSubscriber();
             sub.Subscribe(COUNTER_HINTS_CHANNEL, delegate {
                 string msg = _db.ListRightPop(COUNTER_QUEUE_NAME);
                 while (msg != null)
                 {
-                    var id = msg.Split(':')[0];
-                    var str = msg.Split(':')[1];
-                    Console.WriteLine(msg);
+                    var argumets = msg.Split(':');
+                    var id = argumets[0];
+                    var str = argumets[1];
+                    Console.WriteLine($"msg: {msg}");
                     int vowelsAmount = Regex.Matches(str, @"[eyuioaEYUIOA]", RegexOptions.IgnoreCase).Count;
                     int consonantsAmount = Regex.Matches(str, @"[qwrtpsdfghjklzxcvbnmQWRTPSDFGHJKLZXCVBNM]", RegexOptions.IgnoreCase).Count;
+                    Console.WriteLine($"SendMessage {id}:{vowelsAmount}:{consonantsAmount}");
                     SendMessage($"{id}:{vowelsAmount}:{consonantsAmount}");
                     msg = _db.ListRightPop(COUNTER_QUEUE_NAME);
                 }

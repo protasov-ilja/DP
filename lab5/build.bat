@@ -10,6 +10,8 @@ dotnet publish Frontend -c Release -o %baseUrl%\%1\Frontend
 dotnet publish Backend -c Release -o %baseUrl%\%1\Backend
 dotnet publish TextListener -c Release -o %baseUrl%\%1\TextListener
 dotnet publish TextRankCalc -c Release -o %baseUrl%\%1\TextRankCalc
+dotnet publish VowelConsCounter -c Release -o %baseUrl%\%1\VowelConsCounter
+dotnet publish VowelConsRater -c Release -o %baseUrl%\%1\VowelConsRater
 
 CD %baseUrl%\%1
 
