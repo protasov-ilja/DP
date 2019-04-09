@@ -1,0 +1,16 @@
+@{
+    ViewData["Title"] = "Statistics";
+    @model StatisticsData;
+}
+<div class="row body-content">
+    @if(Model != null)
+    {
+        <p>Text number: @Model.TextNum</p>
+        <p>High rank part:@Model.HighRankPart</p>
+        <p>Average rank:@Math.Round(Model.AvgRank, 2)</p>
+    }
+    else
+    {
+        <p>No statisitcs info</p>
+    }
+</div>
