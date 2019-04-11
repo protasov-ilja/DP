@@ -49,6 +49,7 @@ namespace Frontend.Controllers
         [HttpGet("TextDetails")]
         public async Task<IActionResult> GetTextDetailsById(string textId)
         {
+            Console.WriteLine(textId);
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(UriBackendAddress);
             HttpResponseMessage response = await client.PostAsJsonAsync($"/api/values/rank", textId.Split("\"")[1]);

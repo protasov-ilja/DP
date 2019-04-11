@@ -4,6 +4,8 @@ start "FrontendAPI" /d Frontend dotnet Frontend.dll
 start "BackendAPI" /d Backend dotnet Backend.dll
 start "TextListener" /d TextListener dotnet TextListener.dll
 start "TextRankCalc" /d TextRankCalc dotnet TextRankCalc.dll
+start "TextStatistics" /d TextStatistics dotnet TextStatistics.dll
+
 setlocal enabledelayedexpansion
 set ind=0
 for /f "usebackq tokens=1*" %%a in ("backend_config.txt") do (

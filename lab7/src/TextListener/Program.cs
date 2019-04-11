@@ -1,8 +1,9 @@
 ﻿using System;
 using StackExchange.Redis;
+using Newtonsoft.Json;
 
 namespace TextListener
-{
+{    
     class Program
     {
         private static ConnectionMultiplexer _redis;
@@ -16,8 +17,16 @@ namespace TextListener
             _db = _redis.GetDatabase();
             var sub = _redis.GetSubscriber();
             sub.Subscribe("events", (channel, message) => {
-                var db = _redis.GetDatabase(GetDbId((string)message));
-                var value = db.StringGet((string)message);
+                var data = JsonConvert.DeserializeObject<DataWrapper<string>>(message);
+                if (data == null || data.DataType != "TextCreated")
+                {
+                    Console.WriteLine("data is null");
+                    return;
+                }
+
+                var db = _redis.GetDatabase(GetDbId(data.Data));
+                var value = db.StringGet(data.Data);
+                
                 Console.WriteLine($"TextCreated: {message} {value}");
             });
 

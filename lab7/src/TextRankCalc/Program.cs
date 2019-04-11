@@ -1,6 +1,7 @@
 ﻿using System;
 using StackExchange.Redis;
 using System.Threading;
+using Newtonsoft.Json;
 
 namespace TextRankCalc
 {
@@ -18,7 +19,14 @@ namespace TextRankCalc
             _db = _redis.GetDatabase();
             var sub = _redis.GetSubscriber();
             sub.Subscribe("events", (channel, message) => {
-                var id = message.ToString(); 
+                var data = JsonConvert.DeserializeObject<DataWrapper<string>>(message);
+                if (data == null || data.DataType != "TextCreated")
+                {
+                    Console.WriteLine("data is null");
+                    return;
+                }
+
+                var id = data.Data; 
                 if (id == null)
                 {
                     Console.WriteLine("id is null");  

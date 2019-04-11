@@ -18,22 +18,22 @@ namespace Frontend.Controllers
     {
         private const string UriBackendAddress = "http://localhost:5000/";
 
-        [HttpGet("")]
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(UriBackendAddress);
             StatisticsData result = null;
             HttpResponseMessage httpResponse = null;
-
-            httpResponse = await client.GetAsync("api/text/statistics");
+            Console.WriteLine($"HttpResponseMessage");
+            httpResponse = await client.GetAsync("/api/values/statistic");
             if (httpResponse.IsSuccessStatusCode)
             {
                 result = await httpResponse.Content.ReadAsAsync<StatisticsData>(); 
+                Console.WriteLine($"TextNum: {result.TextNum} High: {result.HighRankPart} Avg: {result.AvgRank}");
             }
 
             return View(result);
         }
-
     }
 }

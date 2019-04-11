@@ -1,5 +1,6 @@
 ﻿using System;
 using StackExchange.Redis;
+using Newtonsoft.Json;
 
 namespace TextStatistics
 {
@@ -20,13 +21,14 @@ namespace TextStatistics
             _db = _redis.GetDatabase();
             var sub = _redis.GetSubscriber();
             sub.Subscribe("events", (channel, message) => {
-                var id = message.ToString();
-                var rank = 0; 
-                if (id == null)
+                var data = JsonConvert.DeserializeObject<DataWrapper<StatisticsEventData>>(message);
+                if (data == null || data.DataType != "TextCalculated")
                 {
-                    Console.WriteLine("message is null");  
+                    Console.WriteLine("data is null");
                     return;
                 }
+
+                var rank = data.Data.Rank;
 
                 _textNum++;
                 _rankSum += rank;
@@ -40,7 +42,7 @@ namespace TextStatistics
 
                 Console.WriteLine($"textNum: {_textNum} highRankPart: {_highRankPart} avrRank: {_avrRank}");
 
-                var db = _redis.GetDatabase(0); 
+                var db = _redis.GetDatabase(0);
                 db.StringSet($"statistics", $"{_textNum}:{_highRankPart}:{_avrRank}");
             });
 

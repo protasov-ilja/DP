@@ -1,5 +1,6 @@
 ﻿using System;
 using StackExchange.Redis;
+using Newtonsoft.Json;
 
 namespace VowelConsRater
 {
@@ -28,6 +29,11 @@ namespace VowelConsRater
                     Console.WriteLine("rank_" + id);
                     var db = _redis.GetDatabase(GetDbId(id)); 
                     db.StringSet($"rank_{id}", rank);
+
+                    var data = PackToJson<StatisticsEventData>("TextCalculated", new StatisticsEventData{ Rank = double.Parse(rank), TextId = id });
+                    var subscr = _redis.GetSubscriber();
+                    subscr.Publish("events", data);
+
                     msg = _db.ListRightPop(RATE_QUEUE_NAME);
                 }
             });
@@ -42,6 +48,13 @@ namespace VowelConsRater
             var databaseId = db.StringGet(textId);
             Console.WriteLine(databaseId);
             return int.Parse(databaseId); 
+        }
+
+        private static string PackToJson<T>(string dataType, T data)
+        {
+            var wrapper = new DataWrapper<T>(dataType, data);
+
+            return JsonConvert.SerializeObject(wrapper);   
         }
     }
 }

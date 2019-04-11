@@ -7,6 +7,7 @@ using System.Collections.Concurrent;
 using StackExchange.Redis;
 using System.Threading;
 using Backend.Types;
+using Newtonsoft.Json;
 
 namespace Backend.Controllers
 {
@@ -50,7 +51,7 @@ namespace Backend.Controllers
         public StatisticsData GetStatistic()
         {
             string result = null;
-            IDatabase redisDatabase = _redis.GetDatabase(1);
+            IDatabase redisDatabase = _redis.GetDatabase(0);
             for (int i = 0; i < 3; i++)
             {
                 string stringByKey = redisDatabase.StringGet("statistics");
@@ -64,11 +65,14 @@ namespace Backend.Controllers
             }
 
             var str = result.Split(":");
-            var textStatistics = new StatisticsData();
-            
-            textStatistics.TextNum = int.Parse(str[0]);
-            textStatistics.HighRankPart = int.Parse(str[1]);
-            textStatistics.AvgRank = double.Parse(str[2]);
+            var textStatistics = new StatisticsData
+            { 
+                TextNum = int.Parse(str[0]), 
+                HighRankPart = int.Parse(str[1]), 
+                AvgRank = double.Parse(str[2])
+            };
+
+            Console.WriteLine($"statistics: {str}");
 
             return textStatistics;
         }
@@ -83,9 +87,9 @@ namespace Backend.Controllers
             _redis.GetDatabase(0).StringSet(id, dbId.ToString());
             IDatabase db = _redis.GetDatabase(dbId);
             db.StringSet(id, value.TextId);
-
+            var data = PackToJson<string>("TextCreated", id);
             var sub = _redis.GetSubscriber();
-            sub.Publish("events", id);
+            sub.Publish("events", data);
            
             return id;
         }
@@ -111,6 +115,13 @@ namespace Backend.Controllers
             var databaseId = db.StringGet(textId);
             Console.WriteLine(databaseId);
             return int.Parse(databaseId);
+        }
+
+        private string PackToJson<T>(string dataType, T data)
+        {
+            var wrapper = new DataWrapper<T>(dataType, data);
+
+            return JsonConvert.SerializeObject(wrapper);   
         }
     }
 }

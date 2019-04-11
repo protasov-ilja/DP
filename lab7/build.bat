@@ -12,6 +12,7 @@ dotnet publish TextListener -c Release -o %baseUrl%\%1\TextListener
 dotnet publish TextRankCalc -c Release -o %baseUrl%\%1\TextRankCalc
 dotnet publish VowelConsCounter -c Release -o %baseUrl%\%1\VowelConsCounter
 dotnet publish VowelConsRater -c Release -o %baseUrl%\%1\VowelConsRater
+dotnet publish TextStatistics -c Release -o %baseUrl%\%1\TextStatistics
 
 CD %baseUrl%\%1
 
