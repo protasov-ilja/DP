@@ -1,0 +1,18 @@
+@{
+    ViewData["Title"] = "Text Details";
+    @model RankData;
+}
+<div class="row body-content">
+    @if(Model != null)
+    {
+        <div>
+            <p>Text id: @Model.TextId</p>
+            <br />
+            <p>Rank: @Model.Rank</p>
+        </div>
+    }
+    else
+    {
+        <p>"You limit is over"</p>
+    }
+</div>

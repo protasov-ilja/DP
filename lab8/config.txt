@@ -1,0 +1,4 @@
+port_frontend 5003
+port_backend 5000
+count_vowel_cons_counter 3
+count_vowel_cons_rater 2
